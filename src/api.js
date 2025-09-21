@@ -1,18 +1,25 @@
-// Example: api.js or inside component
-export const analyzeFood = async (formData) => {
+// src/api.js
+const BACKEND_URL = "https://foodcal-backend.onrender.com";
+
+export const uploadImage = async (imageFile) => {
   try {
-    const response = await fetch(
-      "https://foodcal-ai-backend.onrender.com/analyze", // <-- live backend
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const response = await fetch(`${BACKEND_URL}/predict`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from backend");
+    }
 
     const data = await response.json();
     return data;
+
   } catch (error) {
-    console.error("Error calling API:", error);
-    throw error;
+    console.error("API Error:", error);
+    return { error: error.message };
   }
 };
